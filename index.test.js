@@ -1,5 +1,6 @@
 const { Comment, Like, Post, Profile, User } = require("./index");
 const { db } = require('./db/connection.js');
+const likesdata = require("./seed/likes.json");
 
 describe('Social Sequelzie Test', () => {
     /**
@@ -73,12 +74,20 @@ describe('Social Sequelzie Test', () => {
     });
 
     test("can create like", async () => {
+        await Like.bulkCreate(likesdata);
+        const testUser = await User.findByPk(1);
+        const testUser2 = await User.create({ username: 'Mr Perfect', email: 'hotmale@hotmail.com' });
+        let like1 = await Like.findByPk(1);
+        let like2 = await Like.findByPk(2);
+        let like3 = await Like.findByPk(3);
+        await testUser.setLikes([like1, like2]);
+        await testUser2.setLikes([like2, like3]);
+        expect(await testUser.hasLike(like1)).toBe(true); 
+        expect(await like2.hasUser(testUser2)).toBe(true);
+
+
 
     })
-
-
-
-
 
 
 })
